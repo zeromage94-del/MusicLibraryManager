@@ -14,7 +14,9 @@ from pathlib import Path
 SPOTIFY = 'https://open.spotify.com/track/6PyUsu22LkahLb2bOOfdUZ'
 SOURCE = 'https://www.scottbuckley.com.au/library/wp-content/uploads/2018/12/sb_snowfall.mp3'
 LICENSE_PAGE = 'https://www.scottbuckley.com.au/library/snowfall/'
-COVER = 'https://www.scottbuckley.com.au/library/wp-content/uploads/2018/12/Snowfall-Cover-700x329.jpg'
+# Public thumbnail supplied by Spotify's oEmbed endpoint for this exact test track.
+# It is inspected in the temporary runner only and excluded from uploaded artifacts.
+COVER = 'https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02d799783c0945c519747e42a4'
 
 
 def main():
