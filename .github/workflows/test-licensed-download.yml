@@ -1,0 +1,51 @@
+name: Diagnostico de uma faixa licenciada
+
+on:
+  push:
+    branches: [test/authorized-download]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  licensed-track:
+    name: Testar spotdl.exe com uma faixa CC BY 4.0
+    if: github.ref == 'refs/heads/test/authorized-download'
+    runs-on: windows-2022
+    timeout-minutes: 15
+
+    steps:
+      - name: Baixar scripts do diagnostico
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          architecture: x64
+
+      - name: Baixar exatamente o ZIP portatil ja compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: MusicLibraryManager-Portatil-Windows-v0.7
+          run-id: 39476119104
+          github-token: ${{ github.token }}
+          path: diagnostic/package
+
+      - name: Preparar ferramentas e executar diagnostico fixo
+        shell: pwsh
+        run: ./tools/run_licensed_download.ps1
+
+      - name: Disponibilizar somente evidencias de texto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MusicLibraryManager-Licensed-Track-Diagnostic
+          path: |
+            diagnostic/report/*.json
+            diagnostic/report/*.log
+            diagnostic/report/ATTRIBUTION.txt
+            diagnostic/report/DIAGNOSTIC.txt
+          if-no-files-found: warn
+          retention-days: 7
