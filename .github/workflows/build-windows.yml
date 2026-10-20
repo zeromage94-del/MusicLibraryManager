@@ -1,4 +1,5 @@
 
+
 name: Gerar instalador Windows
 
 on:
@@ -9,8 +10,9 @@ permissions:
 
 jobs:
   build:
+    name: Compilar Music Library Manager
     runs-on: windows-2022
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: Baixar projeto
@@ -20,36 +22,102 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+          architecture: x64
 
       - name: Extrair projeto
         shell: pwsh
         run: |
-          $zip = Get-ChildItem -File -Filter 'MusicLibraryManager_Windows_v0.7*.zip' | Select-Object -First 1
-          if (-not $zip) { throw 'ZIP v0.7 nao encontrado' }
-          Expand-Archive -LiteralPath $zip.FullName -DestinationPath source -Force
-          if (-not (Test-Path 'source/MusicLibraryManager/scripts/build_windows.ps1')) {
-            throw 'Estrutura do projeto nao encontrada'
+          $zip = Get-ChildItem -File -Filter 'MusicLibraryManager_Windows_v0.7*.zip' |
+            Select-Object -First 1
+
+          if (-not $zip) {
+            throw 'Arquivo ZIP v0.7 nao encontrado'
           }
+
+          Expand-Archive -LiteralPath $zip.FullName -DestinationPath source -Force
+
+          $script = 'source/MusicLibraryManager/scripts/build_windows.ps1'
+
+          if (-not (Test-Path $script)) {
+            throw 'Script de compilacao nao encontrado no ZIP'
+          }
+
+          Write-Host 'Projeto extraido com sucesso'
+
+      - name: Corrigir erro do PowerShell
+        shell: pwsh
+        run: |
+          $arquivo = 'source/MusicLibraryManager/scripts/build_windows.ps1'
+
+          $conteudo = Get-Content -LiteralPath $arquivo -Raw
+
+          $conteudo = $conteudo.Replace(
+            '$LASTEXITCODE:',
+            '${LASTEXITCODE}:'
+          )
+
+          Set-Content -LiteralPath $arquivo -Value $conteudo -Encoding utf8
+
+          Write-Host 'Correcao do PowerShell aplicada'
 
       - name: Instalar dependencias
         shell: pwsh
         run: |
           Set-Location source/MusicLibraryManager
+
           python -m pip install --upgrade pip
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Falha na atualizacao do pip'
+          }
+
           python -m pip install -r requirements.txt 'pyinstaller>=6.16,<7'
-          if ($LASTEXITCODE -ne 0) { throw 'Falha ao instalar dependencias' }
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Falha ao instalar dependencias'
+          }
+
           choco install innosetup -y --no-progress
-          if ($LASTEXITCODE -ne 0) { throw 'Falha no Inno Setup' }
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Falha ao instalar Inno Setup'
+          }
 
       - name: Compilar EXE e instalador
         shell: pwsh
         run: |
           Set-Location source/MusicLibraryManager
+
           ./scripts/build_windows.ps1
+
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Falha na compilacao'
+          }
+
+      - name: Verificar arquivos gerados
+        shell: pwsh
+        run: |
+          $pasta = 'source/MusicLibraryManager/release'
+
+          $setup = Join-Path $pasta 'MusicLibraryManager_Setup_v0.7_Windows_x64.exe'
+          $portatil = Join-Path $pasta 'MusicLibraryManager_Portatil_v0.7_Windows_x64.zip'
+
+          if (-not (Test-Path $setup)) {
+            throw 'Instalador EXE nao encontrado'
+          }
+
+          if (-not (Test-Path $portatil)) {
+            throw 'Versao portatil nao encontrada'
+          }
+
+          Get-ChildItem $pasta
 
       - name: Disponibilizar arquivos
         uses: actions/upload-artifact@v4
         with:
-          name: MusicLibraryManager-Windows
-          path: source/MusicLibraryManager/release/*
+          name: MusicLibraryManager-Windows-v0.7
+          path: |
+            source/MusicLibraryManager/release/*.exe
+            source/MusicLibraryManager/release/*.zip
           if-no-files-found: error
+          retention-days: 30
