@@ -2,11 +2,13 @@
 
 Veja [COMO_GERAR_EXE.md](COMO_GERAR_EXE.md) para usar o GitHub Actions e obter `Setup.exe` e ZIP portátil. O projeto v0.6 e todas as 10 abas estão preservados.
 
+A [auditoria das integrações](docs/AUDITORIA_INTEGRACOES.md) distingue os dois CLIs empacotados, as quatro APIs de serviços externos e os projetos usados apenas como referência. Também registra as funções ainda ausentes para o fluxo completo de playlist Spotify/TIDAL → FLAC com metadados, capa e letras, e os limites da validação do build nesta sessão.
+
 # Music Library Manager v0.6 — Windows 11
 
 Interface em português (Python + PySide6) para **playlists Spotify/TIDAL, detecção de FLACs existentes, Lidarr, Prowlarr, qBittorrent e Jellyfin**.
 
-> **O ZIP inclui código-fonte e scripts `.bat`, não um executável `.exe` pronto.** Os 64 testes foram realizados **offline**, com APIs simuladas e arquivos de teste. Nem a interface gráfica nem downloads reais foram validados num Windows com todos os serviços instalados. Não fornece arquivos musicais, indexadores, torrents, assinaturas, credenciais ou mecanismos para contornar DRM.
+> **O checkout e o ZIP histórico incluem código-fonte e scripts `.bat`.** O instalador e o ZIP portátil com executáveis são gerados pelo GitHub Actions. Os testes disponíveis usam APIs simuladas e arquivos de teste; o carregamento dos executáveis é verificado durante o build. Interface gráfica e downloads reais precisam de validação num Windows com os serviços instalados. O projeto não fornece arquivos musicais, indexadores, torrents, assinaturas, credenciais ou mecanismos para contornar DRM.
 
 ## A função central: não baixar músicas repetidas
 
@@ -73,14 +75,14 @@ A correspondência detalhada automática **por faixa** na aba Busca FLAC usa o a
 
 ## Instalação
 
-1. Windows 11, Python 3.11+ e FFmpeg disponível no PATH. Para FFmpeg: `winget install --id Gyan.FFmpeg -e`.
-2. Extraia o ZIP e execute `instalar.bat`. Cria `.venv` e instala `PySide6`, `keyring`, `mutagen`, `tiddl`, `spotdl`.
+1. Para executar pelos fontes: Windows 11, Python 3.13 x64 e FFmpeg disponível no PATH. Para FFmpeg: `winget install --id Gyan.FFmpeg -e`. Setup e portátil dispensam Python; veja [README_WINDOWS.md](README_WINDOWS.md).
+2. No checkout dos fontes, execute `instalar.bat`. Cria `.venv` e instala `PySide6`, `keyring`, `mutagen`, `tiddl`, `spotdl`.
 3. Execute `iniciar.bat`. Se houver falha, `INICIAR_COM_LOG.bat` gera `inicializacao.log`.
 4. Instale separadamente, conforme suas necessidades, [Lidarr](https://github.com/Lidarr/Lidarr), [Prowlarr](https://github.com/Prowlarr/Prowlarr), [qBittorrent](https://github.com/qbittorrent/qBittorrent) e [Jellyfin](https://github.com/jellyfin/jellyfin).
 5. Abra **Configurações** no programa. Informe URL/API Key de Lidarr/Prowlarr, URL/senha WebUI qBittorrent e usuário/senha Jellyfin. Verifique cada conexão. No Jellyfin, selecione uma biblioteca de música no painel do servidor apontando para a pasta que guarda os FLACs.
 6. Na tela inicial, cole a playlist Spotify e clique **Preparar playlist FLAC** para detectar as músicas que já possui antes de pedir qualquer busca de álbum.
 
-Para gerar um EXE **no seu Windows**, execute `gerar_exe.bat`. É necessário ter Python e dependências instalados antes. O EXE **não inclui** os quatro servidores de terceiros nem os arquivos de música.
+Para gerar os executáveis **no seu Windows**, instale Python 3.13 x64 e Inno Setup 6 e execute `gerar_exe.bat`. O script instala `requirements-build.txt`; detalhes em [COMO_GERAR_EXE.md](COMO_GERAR_EXE.md). O pacote **não inclui** os quatro servidores de terceiros nem os arquivos de música.
 
 ## Testes offline
 
@@ -90,7 +92,7 @@ Execute `TESTAR.bat` ou:
 .venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Foram realizados **64 testes automatizados** para lógica das APIs, correspondências, TIDAL/Spotify URLs, qBittorrent, Lidarr, Prowlarr, Jellyfin e exportação FLAC portátil. Testes **não comprovam** que o botão de login, reprodução/download real e interfaces gráficas funcionem com as instalações reais; faça verificação antes de confiar em processos extensos.
+A suíte cobre lógica das APIs, correspondências, URLs TIDAL/Spotify, qBittorrent, Lidarr, Prowlarr, Jellyfin, exportação FLAC portátil e empacotamento. Consulte o resultado da execução em **Actions → Gerar instalador Windows**. Os testes **não comprovam** que login, reprodução/download real e interface gráfica funcionem com as instalações reais.
 
 ## Limitações conhecidas
 
@@ -145,4 +147,4 @@ A base persistente **`playlist_sync.sqlite3`** fica no diretório de dados do ap
 - Como ocorre em qualquer atualização de playlist por API remota, interrupções de rede durante modificações no Jellyfin podem deixar duplicações ou mudanças parciais, exigindo uma nova sincronização.
 - **Nenhum arquivo musical é fornecido com o projeto.**
 
-**Testes:** 64 verificações offline aprovadas em 20/10/2026 (49 anteriores + 15 cenários novos de sincronização e Jellyfin). A interface PySide6 e o funcionamento de downloads reais precisam ser testados no Windows 11. Para repetir: `TESTAR.bat`.
+**Testes:** execute `TESTAR.bat` ou consulte o workflow **Gerar instalador Windows** para verificar o resultado na revisão atual. A interface PySide6 e os downloads reais precisam de verificação no Windows 11.

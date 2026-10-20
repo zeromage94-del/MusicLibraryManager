@@ -1,5 +1,12 @@
 MUSIC LIBRARY MANAGER 0.7 - WINDOWS 11
 
+OBTER OS ARQUIVOS
+1. No repositorio zeromage94-del/MusicLibraryManager, abra Actions > Gerar instalador Windows.
+2. Execute Run workflow na branch desejada e aguarde a conclusao com sucesso.
+3. Baixe os artifacts MusicLibraryManager-Setup-Windows-v0.7 e/ou
+   MusicLibraryManager-Portatil-Windows-v0.7. Extraia o arquivo desejado do artifact.
+4. O build usa diretamente os fontes versionados, sem extrair o ZIP historico do projeto.
+
 INSTALACAO
 1. Se voce tem o arquivo MusicLibraryManager_Setup_v0.7_Windows_x64.exe, clique duas vezes.
 2. O instalador cria atalho no menu Iniciar e oferece atalho na area de trabalho.
@@ -24,10 +31,22 @@ INTEGRACOES
   Instale-os e configure endereco e credenciais na aba Configuracoes.
 - TIDAL depende de acesso e autorizacao apropriados, disponibilidade do formato e
   restricoes de cada plataforma. FLAC tecnicamente valido nao comprova origem lossless.
+- Spotify direto usa spotDL e normalmente gera audio com perdas de outra plataforma.
+  A busca FLAC usa metadados Spotify e arquivos locais, Jellyfin ou albuns do Lidarr.
+- Metadados e capas seguem as configuracoes existentes; no TIDAL, letras permanecem
+  desabilitadas na configuracao atual. O empacotamento nao altera essas opcoes.
 
 SEM PYTHON INSTALADO: OK. Esta versao empacota o runtime dentro dos executaveis.
 NAO INCLUI: musica, indexadores, credenciais, FFmpeg e servidores externos.
 
-ORIGEM: Codigo Python e scripts de build em pacote fonte v0.7.
-Status: procedimentos de build e testes offline; integracao completa em Windows
-e downloads reais so poderao ser confirmados apos executar a pipeline e instalar.
+COMPILAR OS FONTES
+- Use Python 3.13 x64 e Inno Setup 6; execute gerar_exe.bat na raiz do repositorio.
+- requirements-build.txt centraliza as dependencias do build e dos testes.
+- scripts/build_windows.ps1 gera os arquivos em release/. Com -SkipInstaller,
+  gera apenas executaveis e ZIP portatil, sem exigir Inno Setup.
+- O build inclui os dicionarios pykakasi do spotDL e verifica os executaveis
+  empacotados antes de gerar o instalador e o ZIP. Veja COMO_GERAR_EXE.md.
+
+ORIGEM: Codigo Python e scripts versionados no repositorio MusicLibraryManager.
+O build testa as APIs offline e o carregamento dos executaveis. Autenticacoes,
+interface grafica e downloads reais exigem verificacao com os servicos no Windows 11.

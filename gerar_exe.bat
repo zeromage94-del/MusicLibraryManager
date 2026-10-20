@@ -12,7 +12,8 @@ if not exist ".venv\Scripts\python.exe" (
   )
 )
 ".venv\Scripts\python.exe" -m pip install --upgrade pip
-".venv\Scripts\python.exe" -m pip install -r requirements.txt "pyinstaller>=6.16,<7"
+if errorlevel 1 goto error
+".venv\Scripts\python.exe" -m pip install -r requirements-build.txt
 if errorlevel 1 goto error
 set "PATH=%CD%\.venv\Scripts;%PATH%"
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build_windows.ps1
