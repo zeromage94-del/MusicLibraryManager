@@ -1,0 +1,5 @@
+PySide6>=6.7,<7
+mutagen>=1.47,<2
+keyring>=25,<27
+tiddl>=3.4,<4
+spotdl>=4,<5
