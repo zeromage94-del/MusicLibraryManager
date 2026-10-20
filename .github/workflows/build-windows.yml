@@ -1,0 +1,55 @@
+
+name: Gerar instalador Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 60
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Extrair projeto
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem -File -Filter 'MusicLibraryManager_Windows_v0.7*.zip' | Select-Object -First 1
+          if (-not $zip) { throw 'ZIP v0.7 nao encontrado' }
+          Expand-Archive -LiteralPath $zip.FullName -DestinationPath source -Force
+          if (-not (Test-Path 'source/MusicLibraryManager/scripts/build_windows.ps1')) {
+            throw 'Estrutura do projeto nao encontrada'
+          }
+
+      - name: Instalar dependencias
+        shell: pwsh
+        run: |
+          Set-Location source/MusicLibraryManager
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt 'pyinstaller>=6.16,<7'
+          if ($LASTEXITCODE -ne 0) { throw 'Falha ao instalar dependencias' }
+          choco install innosetup -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'Falha no Inno Setup' }
+
+      - name: Compilar EXE e instalador
+        shell: pwsh
+        run: |
+          Set-Location source/MusicLibraryManager
+          ./scripts/build_windows.ps1
+
+      - name: Disponibilizar arquivos
+        uses: actions/upload-artifact@v4
+        with:
+          name: MusicLibraryManager-Windows
+          path: source/MusicLibraryManager/release/*
+          if-no-files-found: error
