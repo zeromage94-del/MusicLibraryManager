@@ -102,10 +102,11 @@ iniciar porque o sandbox bloqueia os servidores locais simulados de Lidarr,
 Prowlarr e qBittorrent. A compilação dos fontes Python e a verificação do diff
 também passaram.
 
-Não foram gerados nem executados binários Windows nesta sessão. A tentativa de
-publicar a branch encontrou HTTP 403 no acesso de escrita ao GitHub, impedindo
-a abertura do PR e a validação desta revisão pelo Actions. O build está preparado
-no código; a geração e os testes dos artefatos ainda precisam concluir no Windows.
+Além da validação local, o workflow **Gerar instalador Windows** executa a suíte
+completa no Windows, verifica os executáveis congelados e gera Setup e ZIP
+portátil. Os resultados e artefatos da revisão ficam nas execuções vinculadas ao
+[PR #1](https://github.com/zeromage94-del/MusicLibraryManager/pull/1) e na
+[página do workflow](https://github.com/zeromage94-del/MusicLibraryManager/actions/workflows/build-windows.yml).
 
 Os testes existentes usam APIs simuladas e arquivos de teste. Mesmo após o
 workflow passar, login TIDAL/Spotify, downloads, capas, interface e conexões com
