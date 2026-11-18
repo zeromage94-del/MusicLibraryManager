@@ -52,7 +52,7 @@ jobs:
       - name: Executar testes
         shell: pwsh
         run: |
-          python -m pytest test_*.py -v --tb=short
+          python -m pytest . -v --tb=short
           if ($LASTEXITCODE -ne 0) { throw 'Testes falharam' }
 
       - name: Compilar EXE e instalador
