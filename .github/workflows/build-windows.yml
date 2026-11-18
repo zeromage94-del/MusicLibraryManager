@@ -45,11 +45,14 @@ jobs:
           python -c "import numpy, soundfile, PySide6, mutagen, keyring; print('Dependencias OK')"
           if ($LASTEXITCODE -ne 0) { throw 'Verificacao de imports falhou' }
 
-      - name: Instalar Inno Setup 6
+      - name: Instalar Inno Setup 6 e FFmpeg
         shell: pwsh
         run: |
           choco install innosetup -y --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'Falha ao instalar Inno Setup' }
+          choco install ffmpeg -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'Falha ao instalar FFmpeg' }
+          ffmpeg -version | Select-Object -First 1
 
       - name: Executar testes
         shell: pwsh
