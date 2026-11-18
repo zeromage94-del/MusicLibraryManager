@@ -26,6 +26,8 @@ RunPython -m PyInstaller --noconfirm --clean --onedir --windowed --name MusicLib
 Write-Host '3/6 - spotDL independente (PyInstaller onefile)'
 RunPython -m PyInstaller --noconfirm --clean --onefile --console --name spotdl `
   --collect-all spotdl --collect-all yt_dlp --collect-data yt_dlp `
+  --collect-all pykakasi --collect-data pykakasi `
+  --collect-all mutagen `
   --distpath dist/MusicLibraryManager --workpath build/spotdl --specpath build/specs tools/spotdl_entry.py
 
 Write-Host '4/6 - tiddl independente (PyInstaller onefile)'
