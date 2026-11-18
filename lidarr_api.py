@@ -36,7 +36,7 @@ class LidarrClient:
         payload = json.dumps(data, ensure_ascii=False).encode('utf-8') if data is not None else None
         req = Request(url, data=payload, method=method,
                       headers={'X-Api-Key': self.api_key, 'Accept': 'application/json',
-                               'Content-Type': 'application/json', 'User-Agent': 'MusicLibraryManager/0.2'})
+                               'Content-Type': 'application/json', 'User-Agent': 'MusicLibraryManager/0.7'})
         try:
             with urlopen(req, timeout=self.timeout) as resp:
                 body = resp.read()
