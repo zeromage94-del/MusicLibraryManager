@@ -10,7 +10,7 @@ $env:PYTHONUTF8 = '1'
 
 function RunPython {
     & python @args
-    if ($LASTEXITCODE -ne 0) { throw "Falha Python exit=$LASTEXITCODE: $($args -join ' ')" }
+    if ($LASTEXITCODE -ne 0) { throw "Falha Python exit=${LASTEXITCODE}: $($args -join ' ')" }
 }
 # Windows e Python 3.13: requisito atual do tiddl 3.4.x.
 $ver = (& python -c 'import sys; print(sys.version_info.major, sys.version_info.minor)')
