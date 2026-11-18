@@ -43,11 +43,21 @@ Copy-Item 'README_WINDOWS.md' (Join-Path $bin 'LEIA-ME.txt') -Force
 Copy-Item 'TERCEIROS.md' (Join-Path $bin 'TERCEIROS.md') -Force
 RunPython scripts/collect_licenses.py
 
+Write-Host '2b/6 - Embutir FFmpeg no pacote (sem instalacao separada pelo usuario)'
+$ffExe    = Get-Command ffmpeg.exe  -ErrorAction SilentlyContinue
+$ffProbe  = Get-Command ffprobe.exe -ErrorAction SilentlyContinue
+if ($null -eq $ffExe) { throw 'ffmpeg.exe nao encontrado no PATH; instale antes de empacotar (choco install ffmpeg).' }
+Copy-Item $ffExe.Source   $bin -Force
+if ($ffProbe) { Copy-Item $ffProbe.Source $bin -Force }
+Write-Host "FFmpeg embutido: $(Split-Path $ffExe.Source -Leaf) copiado para $bin"
+
 Write-Host '5/6 - Verificacao de empacotamento'
 & (Join-Path $bin 'MusicLibraryManager.exe') --build-check
 if ($LASTEXITCODE -ne 0) { throw 'GUI --build-check falhou' }
 & (Join-Path $bin 'tiddl.exe') --help | Out-Null
 if ($LASTEXITCODE -ne 0) { throw 'tiddl.exe --help falhou' }
+# spotdl --help com ffmpeg disponivel no bin (PATH ja inclui $bin via --build-check)
+$env:PATH = "$bin;$env:PATH"
 & (Join-Path $bin 'spotdl.exe') --help | Out-Null
 if ($LASTEXITCODE -ne 0) { throw 'spotdl.exe --help falhou' }
 
