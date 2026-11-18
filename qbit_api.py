@@ -40,7 +40,7 @@ class QBittorrentClient:
             raise QBittorrentError('Caminho inválido na API do qBittorrent.')
         url = self.base_url + '/api/v2' + endpoint
         headers = {'Referer': self.base_url + '/', 'Origin': self.base_url,
-                   'User-Agent': 'MusicLibraryManager/0.3'}
+                   'User-Agent': 'MusicLibraryManager/0.7'}
         payload = None
         if data is not None:
             payload = urlencode(data).encode('utf-8')
