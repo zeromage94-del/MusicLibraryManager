@@ -26,6 +26,7 @@ class PackagingTests(unittest.TestCase):
         self.assertIn('--name spotdl', build)
         self.assertIn('--name tiddl', build)
         self.assertIn('--build-check', build)
+        self.assertIn('ffmpeg', build, 'Build script deve embutir o FFmpeg no pacote')
 
 if __name__=='__main__':
     unittest.main()
