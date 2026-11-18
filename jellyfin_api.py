@@ -42,8 +42,8 @@ class JellyfinClient:
             url += '?' + urlencode(params)
         body = json.dumps(data, ensure_ascii=False).encode('utf-8') if data is not None else None
         headers = {'Accept':'application/json', 'Content-Type':'application/json',
-                   'User-Agent':'MusicLibraryManager/0.5',
-                   'X-Emby-Authorization': 'MediaBrowser Client="Music Library Manager", Device="Windows", DeviceId="music-library-manager", Version="0.5"'}
+                   'User-Agent':'MusicLibraryManager/0.7',
+                   'X-Emby-Authorization': 'MediaBrowser Client="Music Library Manager", Device="Windows", DeviceId="music-library-manager", Version="0.7"'}
         if self.token:
             headers['X-Emby-Token'] = self.token
         try:
