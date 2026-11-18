@@ -2,7 +2,7 @@ import ast
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[0]
 
 class PackagingTests(unittest.TestCase):
     def test_scripts_exist(self):
