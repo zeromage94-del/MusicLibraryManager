@@ -17,7 +17,7 @@ $ver = (& python -c 'import sys; print(sys.version_info.major, sys.version_info.
 if ($LASTEXITCODE -ne 0 -or $ver.Trim() -ne '3 13') { throw 'Execute com Python 3.13 no Windows.' }
 
 Write-Host '1/6 - Testes unitarios'
-RunPython -m unittest discover -s tests -q
+RunPython -m unittest discover -s . -p "test_*.py" -q
 Write-Host '2/6 - EXE da interface (PyInstaller onedir)'
 RunPython -m PyInstaller --noconfirm --clean --onedir --windowed --name MusicLibraryManager `
   --collect-all keyring --collect-submodules keyring.backends `
