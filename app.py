@@ -200,7 +200,7 @@ class LidarrWorker(QThread):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Music Library Manager v0.6 — Sincronização inteligente • FLAC + Jellyfin + Lidarr + Prowlarr + qBittorrent')
+        self.setWindowTitle('Music Library Manager v0.7 — Sincronização inteligente • FLAC + Jellyfin + Lidarr + Prowlarr + qBittorrent')
         self.resize(1190, 800)
         self.setMinimumSize(900, 660)
         self.settings = QSettings('LocalDesktop', APP_ID)
