@@ -41,7 +41,7 @@ class ProwlarrClient:
         payload = json.dumps(data, ensure_ascii=False).encode('utf-8') if data is not None else None
         req = Request(self.base_url + '/api/v1' + endpoint, method=method, data=payload,
                       headers={'X-Api-Key': self.api_key, 'Accept': 'application/json',
-                               'Content-Type': 'application/json', 'User-Agent': 'MusicLibraryManager/0.3'})
+                               'Content-Type': 'application/json', 'User-Agent': 'MusicLibraryManager/0.7'})
         try:
             with urlopen(req, timeout=self.timeout) as resp:
                 raw = resp.read()
